@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>food time</title>
+  <link rel="preload" as="fetch" href="https://octothorp.es/?uri=https://objelisks.space/wwo/food">
+  <link rel="octo:octothorpes" href="weirdweboctober">
+  <link rel="octo:octothorpes" href="Food">
+  <style>
+    body {
+      overflow: hidden;
+      user-select: none;
+      background-color: papayawhip;
+    }
+
+    .food {
+      position: absolute;
+      font-size: 42pt;
+    }
+
+    .blender {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 100dvh;
+      z-index: 10;
+      background-color: mintcream;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blender-content {
+      display: grid;
+      grid: min-content / repeat(3, min-content);
+      font-size: 36pt;
+    }
+
+    .recipe-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .recipe-content img {
+      width: 80%;
+    }
+
+    button {
+      background-color: tomato;
+      border: 1px solid salmon;
+      box-shadow: .2rem .2rem 0 peachpuff;
+      justify-self: center;
+      align-self: bottom;
+      font-size: 16pt;
+    }
+
+    button:hover {
+      box-shadow: .2rem .2rem 0 peachpuff;
+    }
+
+    button:active {
+      box-shadow: none;
+    }
+
+    #mix,
+    #reset {
+      visibility: hidden;
+    }
+  </style>
+  <script src="https://unpkg.com/matter-js"></script>
+</head>
+
+<body>
+  <div class="blender">
+    <div class="blender-content"></div>
+    <div class="recipe-content"></div>
+    <button id="mix">Make a recipe</button>
+    <button id="reset">Another!</button>
+  </div>
+  <script>
+    const { Engine, Bodies, Body, Composite, Sleeping } = Matter
+
+    const foods = {
+      "🍇": "Grapes",
+      "🍈": "Melon",
+      "🍉": "Watermelon",
+      "🍊": "Tangerine",
+      "🍋": "Lemon",
+      "🍌": "Banana",
+      "🍍": "Pineapple",
+      "🥭": "Mango",
+      "🍎": "Apple",
+      "🍐": "Pear",
+      "🍑": "Peach",
+      "🍒": "Cherries",
+      "🍓": "Strawberry",
+      "🫐": "Blueberries",
+      "🥝": "Kiwi",
+      "🍅": "Tomato",
+      "🫒": "Olive",
+      "🥥": "Coconut",
+      "🍋‍🟩": "Lime",
+
+      "🥑": "Avocado",
+      "🍆": "Eggplant",
+      "🥔": "Potato",
+      "🥕": "Carrot",
+      "🌽": "Corn",
+      "🌶️": "Hot Pepper",
+      "🫑": "Bell Pepper",
+      "🥒": "Cucumber",
+      "🥬": "Lettuce",
+      "🥦": "Broccoli",
+      "🧄": "Garlic",
+      "🧅": "Onion",
+      "🥜": "Peanuts",
+      "🫘": "Beans",
+      "🌰": "Chestnut",
+      "🫚": "Ginger",
+      "🫛": "Peas",
+      "🍄‍🟫": "Mushroom",
+
+      "🍞": "Bread",
+      "🥐": "Croissant",
+      "🥖": "Baguette",
+      "🫓": "Flatbread",
+      "🥨": "Pretzel",
+      "🥯": "Bagel",
+      "🥞": "Pancakes",
+      "🧇": "Waffle",
+      "🧀": "Cheese",
+      "🍔": "Hamburger",
+      "🍟": "French Fries",
+      "🌯": "Burrito",
+      "🧆": "Falafel",
+      "🥚": "Egg",
+      "🥗": "Green Salad",
+      "🍿": "Popcorn",
+      "🧈": "Butter",
+      "🧂": "Salt",
+      "🥫": "Tomato Sauce",
+
+      "🍚": "Cooked Rice",
+      "🍝": "Spaghetti",
+      "🥟": "Dumpling",
+
+      "🍨": "Ice Cream",
+      "🍩": "Doughnut",
+      "🍪": "Cookie",
+      "🍰": "Cake",
+      "🧁": "Cupcake",
+      "🥧": "Pie Crust",
+      "🍫": "Chocolate",
+      "🍭": "Lollipop",
+      "🍮": "Custard",
+      "🍯": "Honey",
+
+      "🥛": "Milk",
+      "☕": "Coffee",
+      "🍶": "Sake",
+      "🍷": "Wine",
+      "🍺": "Beer",
+      "🧊": "Ice",
+
+      "🦀": "Crab",
+      "🦞": "Lobster",
+      "🦐": "Shrimp",
+      "🦑": "Squid",
+      "🦪": "Oyster",
+      "🐮": "Beef",
+      "🐷": "Pork",
+      "🦃": "Turkey",
+      "🐔": "Chicken",
+      "🐟": "Fish",
+      "🍖": "Meat",
+      "🍗": "Poultry",
+      "🥩": "Meat",
+      "🥓": "Bacon",
+    }
+
+    // https://www.brm.io/matter-js/docs/
+    const engine = Engine.create()
+    let left = Bodies.rectangle(-30, window.innerHeight / 2, 10, window.innerHeight, { isStatic: true })
+    let right = Bodies.rectangle(window.innerWidth - 230, window.innerHeight / 2, 10, window.innerHeight, { isStatic: true })
+    let floor = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 35, window.innerWidth, 10, { isStatic: true })
+    let walls = Composite.create()
+    Composite.add(walls, [left, right, floor])
+    Composite.add(engine.world, walls)
+
+    window.addEventListener('resize', () => {
+      if (!walls) return
+      Composite.remove(engine.world, walls)
+      left = Bodies.rectangle(-30, window.innerHeight / 2, 10, window.innerHeight, { isStatic: true })
+      right = Bodies.rectangle(window.innerWidth - 230, window.innerHeight / 2, 10, window.innerHeight, { isStatic: true })
+      floor = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 35, window.innerWidth, 10, { isStatic: true })
+      walls = Composite.create()
+      Composite.add(walls, [left, right, floor])
+      Composite.add(engine.world, walls)
+    })
+
+    const addToBasket = (food) => {
+      const newFood = document.createElement('div')
+      newFood.textContent = food
+      document.querySelector('.blender-content').appendChild(newFood)
+      document.querySelector('#mix').style.visibility = 'visible'
+    }
+
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)]
+    let foodId = 0
+    const bodies = {}
+
+    const makeFood = (x, y) => {
+      const food = pick(Object.keys(foods))
+      const newFood = document.createElement('div')
+      newFood.id = `id-${foodId++}`
+      newFood.classList.add('food')
+      newFood.textContent = food
+      newFood.style.left = `${x}px`
+      newFood.style.top = `${y}px`
+      document.body.appendChild(newFood)
+      const newBody = Bodies.circle(x, y, 30)
+      Body.setVelocity(newBody, { x: 10 * (Math.random() - 0.5), y: 10 * (Math.random() - 0.5) })
+      Body.setAngularVelocity(newBody, Math.random() * 0.2 - 0.1)
+      bodies[newFood.id] = newBody
+      Composite.add(engine.world, [newBody])
+      newFood.addEventListener('click', () => {
+        delete bodies[newFood.id]
+        Composite.remove(engine.world, newBody)
+        newFood.remove()
+        addToBasket(food)
+      })
+    }
+
+    let dumping = false
+    const foodInterval = setInterval(() => {
+      makeFood(Math.random() * (window.innerWidth - 250), 0)
+      if (Object.keys(bodies).length > 24 && !dumping) {
+        dumping = true
+        Composite.remove(engine.world, walls)
+        walls = null
+        Composite.allBodies(engine.world).forEach(body => {
+          Sleeping.set(body, false)
+          Body.setVelocity(body, { x: body.velocity.x, y: body.velocity.y - 2 })
+        })
+        setTimeout(() => {
+          dumping = false
+          if (!walls) {
+            left = Bodies.rectangle(-30, window.innerHeight / 2, 10, window.innerHeight, { isStatic: true })
+            right = Bodies.rectangle(window.innerWidth - 230, window.innerHeight / 2, 10, window.innerHeight, { isStatic: true })
+            floor = Bodies.rectangle(window.innerWidth / 2, window.innerHeight - 35, window.innerWidth, 10, { isStatic: true })
+            walls = Composite.create()
+            Composite.add(walls, [left, right, floor])
+            Composite.add(engine.world, walls)
+          }
+        }, 3000)
+      }
+    }, 1000)
+
+    // https://spoonacular.com/food-api/docs#Search-Recipes-by-Ingredients
+    const findRecipe = (ingredients) => {
+      document.querySelector('.blender-content').innerHTML = '';
+      fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients.join(',')}`,
+        { headers: { 'Content-Type': 'application/json', 'x-api-key': '1b4803f29bb244739b73f77828d61603 ' } })
+        .then(res => res.json())
+        .then(json => {
+          document.querySelector('.recipe-content').innerHTML = `<h2>${json[0].title}</h2>
+          <img src=${json[0].image}>`
+          document.querySelector('#reset').style.visibility = 'visible'
+        })
+      document.querySelector('#mix').style.visibility = 'hidden'
+    }
+    document.querySelector('#mix').addEventListener('click', () => {
+      const foodList = [...document.querySelector('.blender-content').children].map(el => foods[el.textContent])
+      findRecipe(foodList)
+    })
+    document.querySelector('#reset').addEventListener('click', () => {
+      document.querySelector('.recipe-content').innerHTML = '';
+      document.querySelector('#reset').style.visibility = 'hidden'
+    })
+
+    const run = () => {
+      Engine.update(engine, 1000 / 60)
+      Object.keys(bodies).forEach(key => {
+        const element = document.querySelector(`#${key}`)
+        const body = bodies[key]
+        element.style.left = `${body.position.x}px`
+        element.style.top = `${body.position.y}px`
+        element.style.transform = `rotate(${body.angle}rad)`
+
+        if (body.position.y > window.innerHeight + 50) {
+          delete bodies[key]
+          Composite.remove(engine.world, body)
+          element.remove()
+        }
+      })
+      requestAnimationFrame(run)
+    }
+    run()
+  </script>
+</body>
+
+</html>

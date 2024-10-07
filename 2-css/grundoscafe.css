@@ -1,0 +1,37 @@
+@keyframes dance {
+  0% {
+  transform: translate(-30px, -30px) rotate(20deg) rotate3d(0, 1, 0, 45deg)
+  } 10% {
+  transform: translate(0px, 0px) rotate(0deg) rotate3d(0, 1, 0, 0deg)
+  } 20% {
+  transform: translate(50px, -50px) rotate(-20deg) rotate3d(0, 1, 0, -45deg)
+  } 30% {
+  transform: translate(0px, 0px) rotate(0deg) rotate3d(0, 1, 0, 0deg)
+  } 40% {
+  transform: translate(-50px, -50px) rotate(20deg) rotate3d(0, 1, 0, 45deg)
+  } 50% {
+  transform: translate(0px, 0px) rotate(0deg) rotate3d(0, 1, 0, 45deg)
+  } 60% {
+  transform: translate(0px, -100px) rotate(180deg) rotate3d(0, 1, 0, 0deg)
+  } 70% {
+  transform: translate(0px, 0px) rotate(0deg) rotate3d(0, 1, 0, 0deg)
+  } 80% {
+  transform: translate(30px, -30px) rotate(-60deg) rotate3d(0, 1, 0, -45deg)
+  } 90% {
+  transform: translate(0px, 0px) rotate(0deg) rotate3d(0, 1, 0, 0deg)
+  } 100% {
+  transform: translate(-50px, -50px) rotate(20deg) rotate3d(0, 1, 0, 45deg)
+  }
+}
+.quickref_pet img:not(.margin-auto) {
+  animation: 4s cubic-bezier(0.77, 0, 0.18, 1) infinite alternate dance
+}
+.quickref_pet:nth-child(3n) img:not(.margin-auto) {
+  animation-delay: 0
+}
+.quickref_pet:nth-child(3n+1) img:not(.margin-auto) {
+  animation-delay: -333ms
+}
+.quickref_pet:nth-child(3n+2) img:not(.margin-auto) {
+  animation-delay: -666ms
+}
