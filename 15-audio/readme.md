@@ -1,0 +1,1 @@
+node synth tool where all the inputs are colors

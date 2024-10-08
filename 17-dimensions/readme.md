@@ -1,0 +1,1 @@
+raycaster that paints a detail heat map and the next point is chosen from heighest weight of four random

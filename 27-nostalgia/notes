@@ -1,0 +1,37 @@
+assets:
+
+frame
+grid
+player
+player bullet
+player mine
+rock - 3 variations
+small cloud when dying
+enemy - 5 colors
+enemy bullet
+enemy mine
+mine explosion
+font
+end game button
+
+level json
+scoring logic
+movement
+geoffrey cheat code
+
+top score: 1687
+
+    Green Chias take one hit, and have a limited field of vision.
+    Blue Chias take two hits, and have a better field of vision then green.
+    Yellow Chias take three hits, and have a better field of vision then blue.
+    Red Chias take four hits, and have a better field of vision then yellow.
+    Black Chias are the hardest, and take five hits. They are also the smartest of the Chias, with the best field of vision.
+
+Your enemies have a limited shooting range. To make the game a little more difficult, the range limit is increases after level 6 and in level 12. Each level has eight enemy Chias to kill, except for level 11 (9 Chias) and level 12 (10 Chias).
+
+https://www.neopets.com/games/game.phtml?game_id=539&size=large&quality=best&play=true
+https://www.jellyneo.net/?go=chia_bomber_2
+https://www.neopets.com/ntimes/index.phtml?section=83080&week=189
+
+https://newdocs.phaser.io/docs/3.85.2
+https://www.codeandweb.com/texturepacker
